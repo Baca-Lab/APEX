@@ -1,9 +1,9 @@
 <p align="center">
   <!-- 🎨 YOUR LOGO GOES HERE -->
-  <img src="extra/APEX_logo_v2.png" alt="APEX Logo" width="500">
+  <img src="extra/APEX_logo_v2.png" alt="APEX Logo" width="749">
 </p>
 
-<h1 align="center">APEX: Associating Plasma Epigenetic Marks with Xpression</h1>
+<h1 align="center">APEX – Version 2.3.3 Released </h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">

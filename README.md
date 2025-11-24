@@ -1,6 +1,6 @@
 <p align="center">
   <!-- 🎨 YOUR LOGO GOES HERE -->
-  <img src="extra/APEX_logo_v2.png" alt="APEX Logo" width="749">
+  <img src="extra/apex_gif-ezgif.com-optimize.gif" alt="APEX Logo" width="749">
 </p>
 
 <h1 align="center">APEX – Version 2.3.3 Released </h1>

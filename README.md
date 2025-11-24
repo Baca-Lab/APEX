@@ -8,8 +8,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/R->=4.4.0-blue?style=flat-square&logo=r">
-  <img src="https://img.shields.io/badge/language-R-276DC3?style=flat-square&logo=r">
-  <img src="https://img.shields.io/github/last-commit/<YOUR_USER>/<YOUR_REPO>?style=flat-square">
   <!-- <img src="https://zenodo.org/badge/<ZENODO_ID>.svg"> -->
   <img src="https://img.shields.io/badge/docs-online-blue?style=flat-square&logo=readthedocs">
 </p>

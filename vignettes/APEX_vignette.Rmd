@@ -70,7 +70,7 @@ apex_mat    <- ext$apex_mat
 
 ---
 
-# Load packages
+# Install and load packages
 
 APEX is an R package available from GitHub. The code below installs the required dependency, installs APEX if needed, and loads the package.
 

@@ -1,0 +1,29 @@
+/* Title */
+h1.title {
+  color: #e85c47;
+  font-weight: 700;
+}
+
+/* Subtitle — THIS is the key fix */
+h3.subtitle {
+  color: #6b6b6b;
+  font-size: 1.5em;
+  margin-top: -0.6em;
+}
+
+
+h1 {
+  color: #e85c47;
+  font-weight: 700;
+}
+
+
+h2 {
+  color: #6b6b6b;
+  font-weight: 700;
+}
+
+a {
+  color: black;          /* deep blue */
+}
+

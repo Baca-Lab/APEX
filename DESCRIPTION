@@ -1,0 +1,48 @@
+Package: apex
+Type: Package
+Title: APEX: Profiling Cancer Transcriptional States from Cell-Free Chromatin
+Version: 3.2.3
+Authors@R: c(
+    person(
+      "Gunsagar", "Gulati",
+      email = "gunsagar_gulati@dfci.harvard.edu",
+      role = c("aut", "cre")
+    )
+  )
+Description: APEX (Associating Peripheral Epigenomics with eXpression) is an integrated framework for profiling cancer transcriptional states from cell-free chromatin. The package provides tools for the analysis and interpretation of plasma-based epigenomic data, leveraging histone modifications, genomic features, and chromatin accessibility for predicting gene expression. The package includes curated reference epigenomic feature matrices, pretrained models, and quality control resources that are required for gene expression inference and assessment, and are distributed with the package to ensure reproducibility and ease of use.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+  magrittr (>= 2.0.3),
+  GenomicRanges (>= 1.56.0),
+  data.table (>= 1.16.4),
+  reshape2 (>= 1.4.4),
+  dplyr (>= 1.1.4),
+  stats,
+  IRanges (>= 2.38.1),
+  xgboost (>= 1.7.8.1),
+  GenomeInfoDb (>= 1.40.1),
+  S4Vectors (>= 0.42.1),
+  rtracklayer (>= 1.66.0),
+  limma (>= 3.62.2),
+  ggrepel (>= 0.9.6),
+  ggplot2 (>= 2.4.0.1),
+  msigdbr (>= 25.1.1),
+  GSVA (>= 2.0.7),
+  ggpubr (>= 0.6.2),
+  plotly (>= 4.11.0)
+Depends:
+  R (>= 4.4.0)
+Suggests:
+    stringr (>= 1.5.1),
+    BSgenome.Hsapiens.UCSC.hg19 (>= 1.4.3),
+    BiocIO (>= 1.16.0),
+    Biostrings (>= 2.74.1),
+    XVector (>= 0.46.0),
+    BiocGenerics (>= 0.52.0),
+    knitr,
+    rmarkdown,
+    remotes
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr

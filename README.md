@@ -12,7 +12,6 @@
 </p>
 
 ---
-# APEX
 
 **APEX (Associating Peripheral Epigenomics with eXpression)** infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched circulating chromatin (e.g., **H3K4me3**, **H3K36me3**) using pretrained models.  
 
@@ -37,7 +36,7 @@ library(apex)
 
 # Minimal workflow
 
-Below we provide a brief overview of the capabilites and functions avialabel through the APEX R package. For a detailed example to work through, please refer to the tutorial vignette at:  
+Below we provide a brief overview of the capabilites and functions available through the APEX R package. For a detailed example to work through, please refer to the tutorial vignette at:  
 
 ```r
 browseVignettes("apex")
@@ -75,6 +74,7 @@ manifest <- data.frame(
 
 ## Quality control
 Before feature extraction and expression inference, we recommend assessing cfChIP-seq library quality using histone mark–specific enrichment metrics. `apex_qc()` reports two complementary measures per sample and mark:  
+  
 	•	Fragment number: total uniquely mapped fragments (proxy for library complexity and sequencing depth)  
 	•	Enrichment score: signal-to-noise metric comparing normalized coverage over expected on-target versus off-target genomic regions  
 	
@@ -82,8 +82,7 @@ Before feature extraction and expression inference, we recommend assessing cfChI
 qc <- apex_qc(manifest)
 ```
 
-Recommended QC thresholds  
-
+**Recommended QC thresholds**
 These thresholds were used during model training and benchmarking and serve as practical guidelines (not strict cutoffs):  
 	•	H3K4me3: enrichment > 7 and > 1 million fragments  
 	•	H3K27ac: enrichment > 2 and > 1 million fragments  

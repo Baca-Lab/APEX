@@ -17,7 +17,7 @@
 **APEX (Associating Peripheral Epigenomics with eXpression)** infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched circulating chromatin (e.g., **H3K4me3**, **H3K36me3**) using pretrained models.  
 
 ## Installation
-We recommend installing the APEX package using the 'remotes' package from the R console. If you do not have 'remotes' installed, you can install it by copying and pasting the following code in the R console:  
+We recommend installing the APEX package using the `remotes` package from the R console. If you do not have `remotes` installed, you can install it by copying and pasting the following code in the R console:  
 
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) {
@@ -27,7 +27,7 @@ remotes::install_github("Baca-Lab/APEX")
 ```
 
 ## Load apex
-After installation, load the 'apex' package using the 'library' function in R:  
+After installation, load the `apex` package using the `library` function in R:  
 
 ```r
 library(apex)
@@ -45,11 +45,9 @@ browseVignettes("apex")
 
 ## Required input
 
-APEX expects fragment-level BED-like files that include fragment coordinates and fragment-derived covariates (GC content, fragment length, end motifs). We recommend generating these files using the SNAP Nextflow pipeline:  
+APEX expects fragment-level BED-like files that include fragment coordinates and fragment-derived covariates (GC content, fragment length, end motifs). We recommend generating these files using the SNAP Nextflow pipeline, which is publicly available at [SNAP pipeline](https://github.com/prc992/SNAP).
 
-https://github.com/prc992/SNAP  
-
-Important: APEX currently uses hg19 genomic coordinates.  
+**Important**: Please use the hg19 reference genome as APEX currently uses hg19 coordinates.  
 
 Each fragment file contains:  
 1.  chromosome  

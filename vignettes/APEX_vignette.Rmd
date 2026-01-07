@@ -123,7 +123,7 @@ Before feature extraction and expression inference, we recommend assessing cfChI
 	•	Fragment number: total uniquely mapped fragments (depth/complexity proxy)
 	•	Enrichment score: signal-to-noise, comparing normalized coverage over “on-target” vs “off-target” regions
 
-Enrichment scores are computed using predefined on-target/off-target regions derived from ChromHMM annotations from the Roadmap Epigenomics Project (see '?apex_qc' for details).
+Enrichment scores are computed using predefined on-target/off-target regions derived from ChromHMM annotations from the Roadmap Epigenomics Project (see `?apex_qc` for details).
 
 ```{r qc, eval=TRUE}
 #qc <- apex_qc(manifest = manifest)
@@ -171,7 +171,7 @@ apex_mat[1:5, 1:5]
 # Run differential expression analysis
 Because APEX outputs inferred expression in a matrix format analogous to bulk RNA-seq, results can be analyzed with standard transcriptomic workflows.
 
-'apex_diff()' performs a limma-based differential analysis to estimate log-fold changes and moderated statistics for each gene.
+`apex_diff()` performs a limma-based differential analysis to estimate log-fold changes and moderated statistics for each gene.
 
 ```{r de, eval=TRUE}
 de <- apex_diff(apex_mat, group = manifest$groups)
@@ -230,7 +230,7 @@ hallmark)
 
 Gene set activity scores are computed using single-sample gene set enrichment analysis (ssGSEA), which estimates the relative enrichment of each gene set within each sample independently. This approach is well suited for plasma-based data and avoids assumptions about absolute expression scaling across samples.
 
-The 'min_genes' parameter ensures that only gene sets with sufficient representation in the inferred expression matrix are scored.
+The `min_genes` parameter ensures that only gene sets with sufficient representation in the inferred expression matrix are scored.
 
 ```{r geneset-score, eval=TRUE}
 gs_scores <- apex_geneset_score(
@@ -246,7 +246,7 @@ gs_scores <- apex_geneset_score(
 
 To assess whether transcriptional programs differ between clinical groups, gene set scores are subjected to differential analysis using the same limma-based framework applied at the gene level. This enables statistical comparison of pathway activity between responders and non-responders to enfortumab vedotin.
 
-The gene set volcano plot summarizes differential program activity, displaying each gene set by its estimated effect size and statistical significance. Highlighted sets facilitate interpretation of biologically relevant programs. The interactive plot ('interactive=TRUE') allows users to hover over the points for more details.
+The gene set volcano plot summarizes differential program activity, displaying each gene set by its estimated effect size and statistical significance. Highlighted sets facilitate interpretation of biologically relevant programs. The interactive plot (`interactive=TRUE`) allows users to hover over the points for more details.
 
 ```{r geneset-volcano, fig.width = 7, fig.height = 5, out.width = "70%", fig.align = "left", eval=TRUE}
 gs_de <- apex_diff(gs_scores, group = manifest$groups)
@@ -260,6 +260,22 @@ apex_geneset_volcano_plot(
 ```
 
 ---
+
+## Nominating expression-based cancer targets with APEX-inferred expression
+
+While differential expression captures group-level differences, many translational applications require prioritizing actionable targets on a per-sample basis. APEX supports expression-based cancer target nomination by ranking therapeutic genes according to their inferred expression levels relative to a large plasma reference cohort (n = 573 samples spanning multiple cancer types). Users may optionally restrict the reference to a specific cancer type (e.g., Urothelial, NSCLC, Prostate / NEPC), enabling lineage-matched target prioritization.
+
+The `apex_rank_targets()` function computes gene-wise expression percentiles for user-supplied APEX-inferred expression data using either a pan-cancer or cancer-specific reference. Higher percentiles indicate genes that are unusually highly expressed relative to comparable tumors profiled by plasma cfChIP-seq, supporting context-aware target nomination directly from plasma.
+
+
+```{r}
+ranked <- apex_rank_targets(
+  apex_mat,
+  top_n = 5,
+  plot = TRUE
+)
+```
+
 
 # Session info
 

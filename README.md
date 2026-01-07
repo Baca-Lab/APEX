@@ -143,6 +143,21 @@ Gene set scores can be analyzed analogously to gene-level data, including differ
 
 ---
 
+# Nominating expression-based cancer targets
+
+The `apex_rank_targets()` function computes gene-wise expression percentiles for user-supplied APEX-inferred expression data using either a pan-cancer or cancer-specific reference. Higher percentiles indicate genes that are unusually highly expressed relative to comparable tumors profiled by plasma cfChIP-seq, supporting context-aware target nomination directly from plasma.
+
+
+```{r}
+ranked <- apex_rank_targets(
+  apex_mat,
+  top_n = 5,
+  plot = TRUE
+)
+```
+
+---
+
 # Documentation
 
 A detailed vignette with example data and workflow can be accessed here:  

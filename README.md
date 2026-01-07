@@ -22,7 +22,7 @@ We recommend installing the APEX package using the `remotes` package from the R 
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
-remotes::install_github("Baca-Lab/APEX")
+remotes::install_github("Baca-Lab/APEX", build_vignettes = TRUE, dependencies = TRUE)
 ```
 
 ## Load apex

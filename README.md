@@ -1,7 +1,6 @@
 <p align="center">
   <img src="man/figures/APEX_logo_v2.png" alt="APEX Logo" width="750">
 </p>
-
 <h1 align="center">APEX – Version 3.2.4 Released </h1>
 
 <p align="center">

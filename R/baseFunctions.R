@@ -144,6 +144,12 @@ weighted.var <- function(x, w, na.rm = TRUE) {
 qualityControl <- function(frags, histone_mark = "H3K4me3") {
   if(unlist(class(frags)) != "GRanges"){
     frags <- readFragBed(frags)
+    frags <- keepSeqlevels(
+      frags,
+      intersect(seqlevels(frags), paste0("chr", c(1:22, "X", "Y"))),
+      pruning.mode = "coarse"
+    )
+
   }
 
   # Construct file paths
@@ -202,4 +208,109 @@ qc <- function(quality_results) {
 
 .msg <- function(..., verbose = TRUE) {
   if (isTRUE(verbose)) message(...)
+}
+
+plot_apex_qc <- function(
+    qc_df,
+    value_prefix,
+    ylab,
+    qc_thresholds = NULL
+) {
+
+  # Identify value columns
+  value_cols <- grep(
+    paste0("^", value_prefix, "_"),
+    colnames(qc_df),
+    value = TRUE
+  )
+
+  # Base R long-format conversion
+  df_long <- do.call(
+    rbind,
+    lapply(value_cols, function(col) {
+      data.frame(
+        SampleID = qc_df$SampleID,
+        Mark = sub(paste0("^", value_prefix, "_"), "", col),
+        Value = qc_df[[col]],
+        stringsAsFactors = FALSE
+      )
+    })
+  )
+
+  df_long$Mark <- factor(df_long$Mark, levels = c("H3K4me3", "H3K36me3", "H3K27ac"))
+
+  # Fixed color palette
+  mark_colors <- c(
+    H3K4me3  = "#A45CA4",
+    H3K36me3 = "#1B99D6",
+    H3K27ac  = "#FFC720"
+  )
+
+  ## ---- QC summary text ----
+  subtitle_text <- NULL
+  if (!is.null(qc_thresholds)) {
+    qc_summary <- sapply(names(qc_thresholds), function(m) {
+      vals <- df_long$Value[df_long$Mark == m]
+      passed <- sum(vals >= qc_thresholds[m], na.rm = TRUE)
+      total  <- sum(!is.na(vals))
+      paste0(m, ": ", passed, "/", total)
+    })
+    subtitle_text <- paste("Samples passing QC: ", paste(qc_summary, collapse = "; "))
+  }
+
+  p <- ggplot2::ggplot(
+    df_long,
+    ggplot2::aes(x = "", y = Value, fill = Mark)
+  ) +
+    ggplot2::geom_boxplot(
+      outlier.shape = NA,
+      width = 0.6,
+      color = "black"
+    ) +
+    ggplot2::geom_jitter(
+      width = 0.15,
+      size = 2,
+      alpha = 0.8
+    ) +
+    ggplot2::scale_fill_manual(values = mark_colors) +
+    ggplot2::facet_wrap(~Mark) +
+    ggplot2::labs(
+      x = NULL,
+      y = ylab,
+      subtitle = subtitle_text
+    ) +
+    ggplot2::theme_classic(base_size = 13) +
+    ggpubr::theme_pubr() +
+    ggplot2::theme(
+      strip.background = ggplot2::element_blank(),
+      strip.text = ggplot2::element_text(face = "bold"),
+      axis.text.x = ggplot2::element_blank(),
+      axis.ticks.x = ggplot2::element_blank(),
+      legend.position = "none",
+      plot.subtitle = ggplot2::element_text(size = 10)
+    )
+
+  # Threshold lines (colored by mark)
+  if (!is.null(qc_thresholds)) {
+    thresh_df <- data.frame(
+      Mark = names(qc_thresholds),
+      Threshold = as.numeric(qc_thresholds),
+      stringsAsFactors = FALSE
+    )
+
+    thresh_df$Mark <- factor(thresh_df$Mark, levels = c("H3K4me3", "H3K36me3", "H3K27ac"))
+
+
+    p <- p +
+      ggplot2::geom_hline(
+        data = thresh_df,
+        ggplot2::aes(yintercept = Threshold, color = Mark),
+        linetype = "dashed",
+        linewidth = 0.8,
+        inherit.aes = FALSE
+      ) +
+      ggplot2::scale_color_manual(values = mark_colors)
+  }
+
+  return(p)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/runAPEX.R
 \name{apex}
 \alias{apex}
-\title{APEX (Associating Plasma Epigenomics with Xpression), framework to predict gene expression from plasma epigenomics}
+\title{APEX (Associating Plasma Epigenomics with eXpression), framework to predict gene expression from plasma epigenomics}
 \usage{
 apex(
   frag_file_k4,

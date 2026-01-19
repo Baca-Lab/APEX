@@ -9,7 +9,7 @@
 
     # ggplot2 / dplyr aesthetics
     "gene", "P.Value", "logFC", "negLogP",
-    "highlight", "percentile",
+    "highlight", "percentile", "Mark", "Value", "Threshold",
 
     # fragment / feature metadata
     "Bin", "Bin.x", "BinSize", "Gene", "Gene.x", "UniqueID",

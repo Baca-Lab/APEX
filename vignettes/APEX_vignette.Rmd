@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 # Overview
 
-APEX (Associating Peripheral Epigenomics with eXpression) infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched DNA (e.g., H3K4me3 and H3K36me3) using pretrained models.
+APEX (Associating Plasma Epigenomics with eXpression) infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched DNA (e.g., H3K4me3 and H3K36me3) using pretrained models.
 
 This vignette demonstrates an example analysis in which cfChIP-seq targeting H3K4me3 and H3K36me3 was performed on baseline plasma samples from patients with metastatic bladder cancer treated with enfortumab vedotin, a NECTIN4-targeting antibody–drug conjugate. Patients are stratified into responders and non-responders based on clinical outcome. The vignette walks through a representative APEX workflow for inferring genome-wide gene expression from plasma epigenomic profiles, followed by downstream gene-level and gene-set–level differential expression analyses and visualization. We test the hypothesis that higher APEX-inferred <i>NECTIN4</i> expression is associated with better response to EV. All data used in this vignette have been de-identified. 
 
@@ -125,8 +125,10 @@ Before feature extraction and expression inference, we recommend assessing cfChI
 
 Enrichment scores are computed using predefined on-target/off-target regions derived from ChromHMM annotations from the Roadmap Epigenomics Project (see `?apex_qc` for details).
 
+When 'plotQC' is set to 'TRUE', the function will generate boxplots and QC pass summaries for enrichment scores and fragment counts using mark-specific thresholds.
+
 ```{r qc, eval=TRUE}
-#qc <- apex_qc(manifest = manifest)
+#qc <- apex_qc(manifest = head(manifest), plotQC = TRUE)
 
 print(head(qc))
 ```
@@ -134,13 +136,26 @@ print(head(qc))
 ## Practical QC thresholds
 The following quality thresholds are generally recommended for optimal performance. These values should be regarded as guidelines rather than strict requirements, as acceptable results are often obtained with lower enrichment scores and fewer fragments:
 	•	H3K4me3: enrichment > 7 and > 1 million unique fragments
-	•	H3K27ac: enrichment > 2 and > 1 million unique fragments
+	•	H3K27ac: enrichment > 7 and > 1 million unique fragments
 	•	H3K36me3: enrichment > 2 and > 2 million unique fragments.
 
 ---
 
 # Run APEX
-Once fragment files pass basic QC, APEX can extract epigenomic/fragmentomic features and infer gene expression using pretrained models.
+Once samples pass basic QC, APEX extracts epigenomic and fragmentomic features and infers genome-wide gene expression using pretrained models.
+
+APEX provides multiple pretrained models corresponding to the chromatin immunoprecipitation data available for a given sample:
+
+- **H3K4me3 only**
+- **H3K36me3 only**
+- **H3K4me3 + H3K36me3** *(recommended use case)*
+- **H3K4me3 + H3K36me3 + H3K27ac**
+
+APEX selects the appropriate model based on the fragment files supplied.
+
+> **Note:**  
+> H3K27ac alone is not provided as a standalone model, as it performed poorly in model evaluation when used in isolation.
+
 
 ## Single-sample run
 A single-sample run is useful for sanity-checking runtime, output shape, and obvious file issues.
@@ -225,10 +240,11 @@ custom_sets <- c(list(
 hallmark)
 ```
 
-
 ## Score gene sets using ssGSEA
 
-Gene set activity scores are computed using single-sample gene set enrichment analysis (ssGSEA), which estimates the relative enrichment of each gene set within each sample independently. This approach is well suited for plasma-based data and avoids assumptions about absolute expression scaling across samples.
+Gene set activity scores can be computed using either the mean expression of genes within each set (`method = "mean"`) or single-sample gene set enrichment analysis (`method = "ssgsea"`), which estimates the relative enrichment of each gene set independently for each sample.
+
+Gene sets can be drawn from the MSigDB collection (`geneset_source = "msigdb"`), with optional specification of a particular MSigDB collection or subcollection using `msigdb_collection` or `msigdb_subcollection`. Custom gene sets may also be provided. See `?apex_geneset_score` and `?msigdbr::msigdbr` for additional details.
 
 The `min_genes` parameter ensures that only gene sets with sufficient representation in the inferred expression matrix are scored.
 

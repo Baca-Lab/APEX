@@ -1,4 +1,4 @@
-#' APEX (Associating Plasma Epigenomics with Xpression), framework to predict gene expression from plasma epigenomics
+#' APEX (Associating Plasma Epigenomics with eXpression), framework to predict gene expression from plasma epigenomics
 #'
 #' This function extracts features from fragment files and generates (1) a dataframe
 #' with several epigenetic features for each gene and (2) a numeric vector of predicted gene expression.

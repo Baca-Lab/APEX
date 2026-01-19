@@ -1,7 +1,7 @@
 Package: apex
 Type: Package
 Title: APEX: Profiling Cancer Transcriptional States from Cell-Free Chromatin
-Version: 3.2.3
+Version: 3.2.4
 Authors@R: c(
     person(
       "Gunsagar", "Gulati",
@@ -9,8 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: APEX (Associating Peripheral Epigenomics with eXpression) is an integrated framework for profiling cancer transcriptional states from cell-free chromatin. The package provides tools for the analysis and interpretation of plasma-based epigenomic data, leveraging histone modifications, genomic features, and chromatin accessibility for predicting gene expression. The package includes curated reference epigenomic feature matrices, pretrained models, and quality control resources that are required for gene expression inference and assessment, and are distributed with the package to ensure reproducibility and ease of use.
-License: GPL-3
+Description: APEX (Associating Plasma Epigenomics with eXpression) is an integrated framework for profiling cancer transcriptional states from cell-free chromatin. The package provides tools for the analysis and interpretation of plasma-based epigenomic data, leveraging histone modifications, genomic features, and chromatin accessibility for predicting gene expression. The package includes curated reference epigenomic feature matrices, pretrained models, and quality control resources that are required for gene expression inference and assessment, and are distributed with the package to ensure reproducibility and ease of use.
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -46,3 +45,4 @@ Suggests:
     remotes
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+License: GPL-2

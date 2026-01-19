@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="man/figures/apex_gif-ezgif.com-optimize.gif" alt="APEX Logo" width="750">
+  <img src="man/figures/APEX_logo_v2.png" alt="APEX Logo" width="750">
 </p>
 
 <h1 align="center">APEX – Version 3.2.3 Released </h1>
@@ -13,16 +13,43 @@
 
 ---
 
-**APEX (Associating Peripheral Epigenomics with eXpression)** infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched circulating chromatin (e.g., **H3K4me3**, **H3K36me3**) using pretrained models.  
+**APEX (Associating Plasma Epigenomics with eXpression)** infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched circulating chromatin (e.g., **H3K4me3**, **H3K36me3**) using pretrained models.  
 
 ## Installation
-We recommend installing the APEX package using the `remotes` package from the R console. If you do not have `remotes` installed, you can install it by copying and pasting the following code in the R console:  
+
+APEX depends on several Bioconductor packages that are not always automatically resolved by CRAN-based installers.  
+We therefore recommend installing Bioconductor dependencies explicitly prior to installing APEX.
+
+### Step 1: Install Bioconductor dependencies
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+
+bioc_packages <- c(
+  "BiocGenerics", "XVector", "Biostrings", "BiocIO",
+  "BSgenome.Hsapiens.UCSC.hg19", "GSVA", "limma",
+  "rtracklayer", "S4Vectors", "GenomeInfoDb",
+  "IRanges", "GenomicRanges", "BiocStyle"
+)
+
+BiocManager::install(bioc_packages, ask = FALSE, update = TRUE)
+```
+
+### Step 2: Install APEX from GitHub
+We recommend installing APEX directly from GitHub using the 'remotes' package:
 
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
-remotes::install_github("Baca-Lab/APEX", build_vignettes = TRUE, dependencies = TRUE)
+
+remotes::install_github(
+  "Baca-Lab/APEX",
+  build_vignettes = TRUE,
+  dependencies = TRUE
+)
 ```
 
 ## Load apex
@@ -78,39 +105,57 @@ Before feature extraction and expression inference, we recommend assessing cfChI
 	•	Fragment number: total uniquely mapped fragments (proxy for library complexity and sequencing depth)  
 	•	Enrichment score: signal-to-noise metric comparing normalized coverage over expected on-target versus off-target genomic regions  
 	
+When 'plotQC' is set to 'TRUE', the function will generate boxplots and QC pass summaries for enrichment scores and fragment counts using mark-specific thresholds.
+
 ```r
-qc <- apex_qc(manifest)
+qc <- apex_qc(manifest = manifest, plotQC = TRUE)
 ```
 
 **Recommended QC thresholds**
 These thresholds were used during model training and benchmarking and serve as practical guidelines (not strict cutoffs):  
 	•	H3K4me3: enrichment > 7 and > 1 million fragments  
-	•	H3K27ac: enrichment > 2 and > 1 million fragments  
+	•	H3K27ac: enrichment > 7 and > 1 million fragments  
 	•	H3K36me3: enrichment > 2 and > 2 million fragments  
 
 Samples below these thresholds may still be informative but should be interpreted with caution.  
 
 ## Infer gene expression
+Once samples pass basic QC, APEX extracts epigenomic and fragmentomic features and infers genome-wide gene expression using pretrained models.
 
-Once samples pass basic QC, APEX extracts epigenomic and fragmentomic features and infers genome-wide gene expression using pretrained models.  
+APEX provides multiple pretrained models corresponding to the chromatin immunoprecipitation data available for a given sample:
 
-For individual analysis, use apex(), and for cohort-level analyses, use `apex_batch()`:  
+- **H3K4me3 only**
+- **H3K36me3 only**
+- **H3K4me3 + H3K36me3** *(recommended use case)*
+- **H3K4me3 + H3K36me3 + H3K27ac**
+
+APEX selects the appropriate model based on the fragment files supplied.
+
+> **Note:**  
+> H3K27ac alone is not provided as a standalone model, as it performed poorly in model evaluation when used in isolation.
+
+### Single-sample analysis
 
 ```r
-#Single APEX run
-apex_single <- apex(frag_file_k4 = "/PATH/TO/H3K4me3/FRAGMENT/FILE", frag_file_k36 = "/PATH/TO/H3K36me3/FRAGMENT/FILE")
+apex_single <- apex(
+  frag_file_k4  = "/PATH/TO/H3K4me3/FRAGMENT/FILE",
+  frag_file_k36 = "/PATH/TO/H3K36me3/FRAGMENT/FILE"
+)
+```
 
-#Batch APEX run
+### Cohort-level analysis
+```r
 apex_mat <- apex_batch(manifest = manifest)
 ```
 
-The result is a genes × samples matrix analogous to bulk RNA-seq expression data.  
+The output is a 'genes × samples' matrix analogous to bulk RNA-seq expression data.
+
 
 ## Differential gene expression analysis
 
-Because APEX outputs inferred expression in a familiar matrix format, results can be analyzed using standard transcriptomic workflows. apex_diff() performs a limma-based differential analysis to estimate log₂ fold changes and moderated statistics between groups.  
+Because APEX outputs inferred expression in a familiar matrix format, results can be analyzed using standard transcriptomic workflows. apex_diff() performs a limma-based differential analysis to estimate log₂ fold changes and moderated statistics between groups.At least **three samples per group** are recommended to ensure stable variance estimation.
 
-```r
+```{r}
 de <- apex_diff(apex_mat, group = manifest$group)
 
 apex_volcano_plot(
@@ -120,17 +165,20 @@ apex_volcano_plot(
 )
 ```
 
-This plot summarizes gene-level differential expression with the option to highlight genes of interest.  
-
+This plot summarizes gene-level differential expression, with the option to highlight genes of interest.
 
 ## Geneset analysis
 
-In addition to individual genes, APEX supports pathway- and program-level analyses. `apex_geneset_score()` computes gene set activity scores (e.g., using ssGSEA) from APEX-inferred expression.  
+In addition to gene-level inference, APEX supports pathway- and program-level analyses. The function `apex_geneset_score()` computes gene set activity scores from APEX-inferred expression using either mean expression (`method = "mean"`) or single-sample gene set enrichment analysis (`method = "ssgsea"`), which estimates relative enrichment for each gene set independently per sample.
 
-```r
-gs_scores <- apex_geneset_score(
+Gene sets may be provided directly (`geneset_source = "custom"`) or drawn from the MSigDB collection (`geneset_source = "msigdb"`), with optional specification of a particular collection or subcollection using `msigdb_collection` or `msigdb_subcollection`. The `min_genes` parameter ensures that only gene sets with sufficient representation in the inferred expression matrix are scored. See `?apex_geneset_score` and `?msigdbr::msigdbr` for additional details.
+
+### Example: Custom gene sets
+```{r}
+gs_scores_custom <- apex_geneset_score(
   apex_mat,
   method = "ssgsea",
+  geneset_source = "custom",
   genesets = list(
     EMT     = c("VIM", "FN1", "ZEB1", "TWIST1"),
     LUMINAL = c("UPK1A", "GATA3", "PPARG"),
@@ -139,8 +187,17 @@ gs_scores <- apex_geneset_score(
 )
 ```
 
-Gene set scores can be analyzed analogously to gene-level data, including differential analysis (with `apex_geneset_diff()`) and volcano-style visualization (with `apex_geneset_volcano_plot()`).  
+### Example: MSigDB Hallmark gene sets
+```{r}
+gs_scores_hallmark <- apex_geneset_score(
+  apex_mat,
+  method = "ssgsea",
+  geneset_source = "msigdb",
+  msigdb_collection = "H"
+)
+```
 
+Gene set scores can be analyzed similarly to gene-level data, including differential testing ('apex_geneset_diff()') and volcano-style visualization ('apex_geneset_volcano_plot()').
 ---
 
 # Nominating expression-based cancer targets
@@ -166,7 +223,7 @@ browseVignettes("apex")
 ```
 
 Other references:  
-	•	SNAP pipeline: https://github.com/prc992/SNAP  
+	•	SNAPIE pipeline: https://github.com/prc992/SNAPIE
 	•	Manuscript: in preparation  
 	
 ---

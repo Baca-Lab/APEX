@@ -1,21 +1,27 @@
 #' Compute QC metrics for a manifest of cfChIP-seq samples
 #'
-#' Given a manifest with fragment file paths per histone mark, computes
-#' enrichment scores and fragment counts for each sample and mark.
+#' Given a manifest containing fragment file paths for one or more histone marks,
+#' computes enrichment scores and fragment counts for each sample and mark.
 #'
-#' @param manifest data.frame with columns:
-#'   sample, H3K4me3, H3K27ac, H3K36me3 (file paths or NA)
+#' @param manifest data.frame describing the cfChIP-seq samples. The first column
+#'   should contain sample identifiers. Subsequent columns should be named
+#'   \code{H3K4me3}, \code{H3K27ac}, and/or \code{H3K36me3}, and contain paths to
+#'   fragment files for each histone mark (or \code{NA} if a mark was not assayed).
+#'
+#' @param plotQC logical. If TRUE (default), generates QC boxplots for enrichment
+#'   scores and fragment counts using mark-specific thresholds.
 #'
 #' @return A list with two data.frames:
 #'   \describe{
-#'     \item{enrichment}{Enrichment scores (rows = samples, cols = histone marks)}
-#'     \item{frag_num}{Fragment counts (rows = samples, cols = histone marks)}
+#'     \item{enrichment}{Enrichment scores (rows = samples, columns = histone marks).}
+#'     \item{frag_num}{Fragment counts (rows = samples, columns = histone marks).}
 #'   }
 #'
 #' @export
-apex_qc <- function(manifest) {
 
-  stopifnot(
+apex_qc <- function(manifest, plotQC = TRUE) {
+
+    stopifnot(
     is.data.frame(manifest),
     ncol(manifest) >= 2
   )
@@ -76,8 +82,38 @@ apex_qc <- function(manifest) {
   )
   colnames(fragnum_df) <- c("SampleID", paste0("FragNum_", histone_cols))
 
-  return(list(
-    enrichment = enrichment_df,
-    frag_num   = fragnum_df
-  ))
+if(plotQC){
+  p_enrichment <- plot_apex_qc(
+    qc_df = enrichment_df,
+    value_prefix = "EnrichmentScore",
+    ylab = "Enrichment score",
+    qc_thresholds = c(
+      H3K36me3 = 2,
+      H3K4me3  = 7,
+      H3K27ac  = 7
+    )
+  )
+
+  p_enrichment
+
+  p_fragnum <- plot_apex_qc(
+    qc_df = fragnum_df,
+    value_prefix = "FragNum",
+    ylab = "Fragment count",
+    qc_thresholds = c(
+      H3K4me3  = 1e6,
+      H3K36me3 = 2e6,
+      H3K27ac  = 1e6
+    )
+  ) +
+    ggplot2::scale_y_log10()
+
+  p_fragnum
+
+  }
+
+return(list(
+  enrichment = enrichment_df,
+  frag_num   = fragnum_df
+))
 }

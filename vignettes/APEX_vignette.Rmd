@@ -153,9 +153,7 @@ APEX provides multiple pretrained models corresponding to the chromatin immunopr
 
 APEX selects the appropriate model based on the fragment files supplied.
 
-> **Note:**  
-> H3K27ac alone is not provided as a standalone model, as it performed poorly in model evaluation when used in isolation.
-
+**Note:** H3K27ac alone is not provided as a standalone model, as it performed poorly in model evaluation when used in isolation.
 
 ## Single-sample run
 A single-sample run is useful for sanity-checking runtime, output shape, and obvious file issues.

@@ -90,9 +90,9 @@ A manifest is a data.frame with one row per sample and paths to fragment files f
 ```r
 manifest <- data.frame(
   sample_id = c("S1", "S2"),
-  frag_k4   = c("S1.K4.bed", "S2.K4.bed"),
+  frag_k4   = c("S1_K4_4NMER_bp_motif.bed", "S2_K4_4NMER_bp_motif.bed"),
   frag_k27  = NA,
-  frag_k36  = c("S1.K36.bed", "S2.K36.bed"),
+  frag_k36  = c("S1_K36_4NMER_bp_motif.bed", "S2_K36_4NMER_bp_motif.bed"),
   group     = c("Responder", "NonResponder")
 )
 ```
@@ -103,7 +103,7 @@ Before feature extraction and expression inference, we recommend assessing cfChI
 	•	Fragment number: total uniquely mapped fragments (proxy for library complexity and sequencing depth)  
 	•	Enrichment score: signal-to-noise metric comparing normalized coverage over expected on-target versus off-target genomic regions  
 	
-When 'plotQC' is set to 'TRUE', the function will generate boxplots and QC pass summaries for enrichment scores and fragment counts using mark-specific thresholds.
+When `plotQC = TRUE`, the function will generate boxplots and QC pass summaries for enrichment scores and fragment counts using mark-specific thresholds.
 
 ```r
 qc <- apex_qc(manifest = manifest, plotQC = TRUE)
@@ -146,12 +146,12 @@ apex_single <- apex(
 apex_mat <- apex_batch(manifest = manifest)
 ```
 
-The output is a 'genes × samples' matrix analogous to bulk RNA-seq expression data.
+The output is a `genes × samples` matrix analogous to bulk RNA-seq expression data.
 
 
 ## Differential gene expression analysis
 
-Because APEX outputs inferred expression in a familiar matrix format, results can be analyzed using standard transcriptomic workflows. apex_diff() performs a limma-based differential analysis to estimate log₂ fold changes and moderated statistics between groups.At least **three samples per group** are recommended to ensure stable variance estimation.
+Because APEX outputs inferred expression in a familiar matrix format, results can be analyzed using standard transcriptomic workflows. `apex_diff()` performs a limma-based differential analysis to estimate log₂ fold changes and moderated statistics between groups.At least **three samples per group** are recommended to ensure stable variance estimation.
 
 ```{r}
 de <- apex_diff(apex_mat, group = manifest$group)
@@ -195,7 +195,7 @@ gs_scores_hallmark <- apex_geneset_score(
 )
 ```
 
-Gene set scores can be analyzed similarly to gene-level data, including differential testing ('apex_geneset_diff()') and volcano-style visualization ('apex_geneset_volcano_plot()').
+Gene set scores can be analyzed similarly to gene-level data, including differential testing (`apex_geneset_diff()`) and volcano-style visualization (`apex_geneset_volcano_plot()`).
 
 ---
 
@@ -220,7 +220,7 @@ APEX includes a reference Snakemake workflow for running analyses across multipl
 
 The Snakemake workflow, along with scripts and usage instructions, is provided in:
 
-'inst/workflows/snakemake/'
+`inst/workflows/snakemake/`
 
 A dedicated README in that directory describes required inputs, configuration, and commands for execution.
 

@@ -165,7 +165,7 @@ apex_volcano_plot(
 
 This plot summarizes gene-level differential expression, with the option to highlight genes of interest.
 
-## Geneset analysis
+## Gene set analysis
 
 In addition to gene-level inference, APEX supports pathway- and program-level analyses. The function `apex_geneset_score()` computes gene set activity scores from APEX-inferred expression using either mean expression (`method = "mean"`) or single-sample gene set enrichment analysis (`method = "ssgsea"`), which estimates relative enrichment for each gene set independently per sample.
 
@@ -196,6 +196,7 @@ gs_scores_hallmark <- apex_geneset_score(
 ```
 
 Gene set scores can be analyzed similarly to gene-level data, including differential testing ('apex_geneset_diff()') and volcano-style visualization ('apex_geneset_volcano_plot()').
+
 ---
 
 # Nominating expression-based cancer targets

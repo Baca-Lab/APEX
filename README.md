@@ -220,7 +220,7 @@ APEX includes a reference Snakemake workflow for running analyses across multipl
 
 The Snakemake workflow, along with scripts and usage instructions, is provided in:
 
-`inst/workflows/snakemake/`
+`inst/workflows/apex_snakemake/`
 
 A dedicated README in that directory describes required inputs, configuration, and commands for execution.
 

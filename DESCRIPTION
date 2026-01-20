@@ -1,7 +1,7 @@
 Package: apex
 Type: Package
 Title: APEX: Profiling Cancer Transcriptional States from Cell-Free Chromatin
-Version: 3.2.4
+Version: 4.0.0
 Authors@R: c(
     person(
       "Gunsagar", "Gulati",

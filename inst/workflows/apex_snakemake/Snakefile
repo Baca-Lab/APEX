@@ -1,0 +1,58 @@
+import pandas as pd
+
+configfile: "config.yaml"
+
+manifest = pd.read_csv(config["manifest"], sep="\t")
+SAMPLES = manifest["sample_id"].tolist()
+
+rule all:
+    input:
+        f"{config['outdir']}/APEX_expression_matrix.tsv",
+        f"{config['outdir']}/APEX_QC_metrics.tsv"
+
+rule apex_qc:
+    input:
+        config["manifest"]
+    output:
+        f"{config['outdir']}/APEX_QC_metrics.tsv"
+    shell:
+        """
+        Rscript scripts/apex_qc_runner.R \
+          {input} \
+          {output}
+        """
+
+rule apex_per_sample:
+    input:
+        manifest=config["manifest"]
+    output:
+        f"{config['outdir']}/per_sample/{{sample}}.apex.tsv"
+    params:
+        sample=lambda wc: wc.sample
+    shell:
+        r"""
+        sid="{params.sample}"
+
+        k4=$(awk -F'\t' '$1=="{params.sample}" {{print $2}}' {input.manifest})
+        k27=$(awk -F'\t' '$1=="{params.sample}" {{print $3}}' {input.manifest})
+        k36=$(awk -F'\t' '$1=="{params.sample}" {{print $4}}' {input.manifest})
+
+        Rscript scripts/apex_worker.R \
+          "$sid" \
+          "${{k4:-NA}}" \
+          "${{k27:-NA}}" \
+          "${{k36:-NA}}" \
+          {output}
+        """
+
+rule gather:
+    input:
+        expand(f"{config['outdir']}/per_sample/{{sample}}.apex.tsv", sample=SAMPLES)
+    output:
+        f"{config['outdir']}/APEX_expression_matrix.tsv"
+    shell:
+        """
+        Rscript scripts/gather_apex_matrix.R \
+          {config[outdir]}/per_sample \
+          {output}
+        """

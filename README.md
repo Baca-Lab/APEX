@@ -1,7 +1,7 @@
 <p align="center">
   <img src="man/figures/APEX_logo_v2.png" alt="APEX Logo" width="750">
 </p>
-<h1 align="center">APEX – Version 3.2.4 Released </h1>
+<h1 align="center">APEX – Version 4.0.0 Released </h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">
@@ -210,6 +210,18 @@ ranked <- apex_rank_targets(
   plot = TRUE
 )
 ```
+
+---
+
+# Snakemake workflow for scalable execution
+
+APEX includes a reference Snakemake workflow for running analyses across multiple samples in parallel. The workflow supports local execution and is compatible with Slurm-based HPC systems for large-scale runs.
+
+The Snakemake workflow, along with scripts and usage instructions, is provided in:
+
+'inst/workflows/snakemake/'
+
+A dedicated README in that directory describes required inputs, configuration, and commands for execution.
 
 ---
 

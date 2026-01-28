@@ -74,7 +74,7 @@ apptainer exec apex.sif Rscript run_apex.R
 This approach avoids manual installation of R, Bioconductor, or system dependencies and is recommended for all large-scale or shared analyses.
 
 
-### Alternative: Install APEX directly in R (advanced users)
+### Alternative: Install APEX directly in R 
 
 If you prefer to install APEX into an existing R environment, you must first install the required Bioconductor dependencies.
 

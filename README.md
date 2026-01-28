@@ -15,8 +15,69 @@
 
 ## Installation
 
-APEX depends on several Bioconductor packages that are not always automatically resolved by CRAN-based installers.  
-We therefore recommend installing Bioconductor dependencies explicitly prior to installing APEX.
+APEX depends on several Bioconductor packages and system libraries that can be difficult to resolve across environments.
+For most users, we strongly recommend using the provided container, which includes all required dependencies and ensures reproducible results.
+
+
+### Recommended: Run APEX using a container
+
+The container includes:
+	•	R ≥ 4.4
+	•	Bioconductor ≥ 3.20
+	•	All APEX dependencies
+	•	Snakemake (for workflow execution)
+	
+#### Local machines (Docker)
+
+```
+docker pull ghcr.io/baca-lab/apex:4.0.0
+```
+
+Interactive R session:
+```
+docker run --rm -it \
+  -v $(pwd):/work \
+  -w /work \
+  ghcr.io/baca-lab/apex:4.0.0 \
+  R
+ ``` 
+
+Run APEX via an R script:
+
+```
+docker run --rm -it \
+  -v $(pwd):/work \
+  -w /work \
+  ghcr.io/baca-lab/apex:4.0.0 \
+  R
+```
+
+Run the included Snakemake workflow. Detailed setup and usage instructions are provided in `inst/workflows/apex_snakemake/README.md`.
+```
+docker run --rm \
+  -v $(pwd):/work \
+  -w /work \
+  ghcr.io/baca-lab/apex:4.0.0 \
+  snakemake --cores 8
+ ``` 
+
+#### HPC systems (Apptainer / Singularity)
+
+```
+apptainer pull apex.sif docker://ghcr.io/baca-lab/apex:4.0.0
+```
+
+```
+apptainer exec apex.sif Rscript run_apex.R
+```
+
+This approach avoids manual installation of R, Bioconductor, or system dependencies and is recommended for all large-scale or shared analyses.
+
+
+### Alternative: Install APEX directly in R (advanced users)
+
+If you prefer to install APEX into an existing R environment, you must first install the required Bioconductor dependencies.
+
 
 ### Step 1: Install Bioconductor dependencies
 
@@ -50,6 +111,7 @@ remotes::install_github(
 )
 ```
 
+
 ## Load apex
 After installation, load the `apex` package using the `library` function in R:  
 
@@ -69,7 +131,7 @@ browseVignettes("apex")
 
 ## Required input
 
-APEX expects fragment-level BED-like files that include fragment coordinates and fragment-derived covariates (GC content, fragment length, end motifs). We recommend generating these files using the SNAP Nextflow pipeline, which is publicly available at [SNAP pipeline](https://github.com/prc992/SNAP).
+APEX expects fragment-level BED-like files that include fragment coordinates and fragment-derived covariates (GC content, fragment length, end motifs). We recommend generating these files using the SNAP Nextflow pipeline, which is publicly available at [SNAPIE pipeline](https://github.com/prc992/SNAPIE).
 
 **Important**: Please use the hg19 reference genome as APEX currently uses hg19 coordinates.  
 
@@ -234,7 +296,7 @@ browseVignettes("apex")
 ```
 
 Other references:  
-	•	SNAPIE pipeline: https://github.com/prc992/SNAPIE
+	•	SNAPIE pipeline: https://github.com/prc992/SNAPIE  
 	•	Manuscript: in preparation  
 	
 ---

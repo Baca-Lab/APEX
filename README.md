@@ -23,10 +23,10 @@ For most users, we strongly recommend using the provided container, which includ
 <summary><strong> Recommended: Run APEX using a container </strong></summary>
 
 The container includes:
-	•	R ≥ 4.4. 
-	•	Bioconductor ≥ 3.20. 
-	•	All APEX dependencies. 
-	•	Snakemake (for workflow execution). 
+	•	R ≥ 4.4  
+	•	Bioconductor ≥ 3.20  
+	•	All APEX dependencies   
+	•	Snakemake (for workflow execution)  
 	
 #### Local machines (Docker)
 
@@ -62,8 +62,6 @@ docker run --rm \
   snakemake --cores 8
  ``` 
 
-</details>
-
 #### HPC systems (Apptainer / Singularity)
 
 ```
@@ -76,8 +74,10 @@ apptainer exec apex.sif Rscript run_apex.R
 
 This approach avoids manual installation of R, Bioconductor, or system dependencies and is recommended for all large-scale or shared analyses.
 
+</details>
 
-### Alternative: Install APEX directly in R 
+<details>
+<summary><strong>  Alternative: Install APEX directly in R </strong></summary>
 
 If you prefer to install APEX into an existing R environment, you must first install the required Bioconductor dependencies.
 
@@ -114,6 +114,7 @@ remotes::install_github(
 )
 ```
 
+</details>
 
 ## Load apex
 After installation, load the `apex` package using the `library` function in R:  
@@ -132,7 +133,8 @@ Below we provide a brief overview of the capabilites and functions available thr
 browseVignettes("apex")
 ```
 
-## Required input
+<details>
+<summary><strong> Required input </summary></strong>
 
 APEX expects fragment-level BED-like files that include fragment coordinates and fragment-derived covariates (GC content, fragment length, end motifs). We recommend generating these files using the SNAP Nextflow pipeline, which is publicly available at [SNAPIE pipeline](https://github.com/prc992/SNAPIE).
 
@@ -148,7 +150,10 @@ Each fragment file contains:
 7.	5′ end motif (read 1)  
 8.	5′ end motif (read 2)  
 
-## Prepare a manifest
+</details>
+
+<details>
+<summary><strong> Prepare a manifest </summary></strong>
 
 A manifest is a data.frame with one row per sample and paths to fragment files for each histone mark, along with a grouping variable for downstream comparisons.
 
@@ -162,7 +167,10 @@ manifest <- data.frame(
 )
 ```
 
-## Quality control
+</details>
+
+<details>
+<summary><strong> Quality control </summary></strong>
 Before feature extraction and expression inference, we recommend assessing cfChIP-seq library quality using histone mark–specific enrichment metrics. `apex_qc()` reports two complementary measures per sample and mark:  
   
 	•	Fragment number: total uniquely mapped fragments (proxy for library complexity and sequencing depth)  
@@ -182,7 +190,11 @@ These thresholds were used during model training and benchmarking and serve as p
 
 Samples below these thresholds may still be informative but should be interpreted with caution.  
 
-## Infer gene expression
+</details>
+
+<details>
+<summary><strong> Infer gene expression </summary></strong>
+
 Once samples pass basic QC, APEX extracts epigenomic and fragmentomic features and infers genome-wide gene expression using pretrained models.
 
 APEX provides multiple pretrained models corresponding to the chromatin immunoprecipitation data available for a given sample:
@@ -197,7 +209,10 @@ APEX selects the appropriate model based on the fragment files supplied.
 > **Note:**  
 > H3K27ac alone is not provided as a standalone model, as it performed poorly in model evaluation when used in isolation.
 
-### Single-sample analysis
+</details>
+
+<details>
+<summary><strong> Single-sample analysis </summary></strong>
 
 ```r
 apex_single <- apex(
@@ -206,15 +221,20 @@ apex_single <- apex(
 )
 ```
 
-### Cohort-level analysis
+</details>
+
+<details>
+<summary><strong> Cohort-level analysis
 ```r
 apex_mat <- apex_batch(manifest = manifest)
 ```
 
 The output is a `genes × samples` matrix analogous to bulk RNA-seq expression data.
 
+</details>
 
-## Differential gene expression analysis
+<details>
+<summary><strong> Differential gene expression analysis </summary></strong>
 
 Because APEX outputs inferred expression in a familiar matrix format, results can be analyzed using standard transcriptomic workflows. `apex_diff()` performs a limma-based differential analysis to estimate log₂ fold changes and moderated statistics between groups.At least **three samples per group** are recommended to ensure stable variance estimation.
 
@@ -230,7 +250,10 @@ apex_volcano_plot(
 
 This plot summarizes gene-level differential expression, with the option to highlight genes of interest.
 
-## Gene set analysis
+</details>
+
+<details>
+<summary><strong> Gene set analysis </summary></strong>
 
 In addition to gene-level inference, APEX supports pathway- and program-level analyses. The function `apex_geneset_score()` computes gene set activity scores from APEX-inferred expression using either mean expression (`method = "mean"`) or single-sample gene set enrichment analysis (`method = "ssgsea"`), which estimates relative enrichment for each gene set independently per sample.
 
@@ -262,9 +285,12 @@ gs_scores_hallmark <- apex_geneset_score(
 
 Gene set scores can be analyzed similarly to gene-level data, including differential testing (`apex_geneset_diff()`) and volcano-style visualization (`apex_geneset_volcano_plot()`).
 
+</details>
+
 ---
 
-# Nominating expression-based cancer targets
+<details>
+<summary><strong> Nominating expression-based cancer targets </summary></strong>
 
 The `apex_rank_targets()` function computes gene-wise expression percentiles for user-supplied APEX-inferred expression data using either a pan-cancer or cancer-specific reference. Higher percentiles indicate genes that are unusually highly expressed relative to a heterogeneous cohort of tumors profiled by plasma cfChIP-seq.
 
@@ -277,9 +303,12 @@ ranked <- apex_rank_targets(
 )
 ```
 
+</details>
+
 ---
 
-# Snakemake workflow for scalable execution
+<details>
+<summary><strong> Snakemake workflow for scalable execution </summary></strong>
 
 APEX includes a reference Snakemake workflow for running analyses across multiple samples in parallel. The workflow supports local execution and is compatible with Slurm-based HPC systems for large-scale runs.
 
@@ -288,6 +317,8 @@ The Snakemake workflow, along with scripts and usage instructions, is provided i
 `inst/workflows/apex_snakemake/`
 
 A dedicated README in that directory describes required inputs, configuration, and commands for execution.
+
+</details>
 
 ---
 

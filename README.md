@@ -224,7 +224,7 @@ apex_single <- apex(
 </details>
 
 <details>
-<summary><strong> Cohort-level analysis
+<summary><strong> Cohort-level analysis </summary></strong>
 ```r
 apex_mat <- apex_batch(manifest = manifest)
 ```
@@ -287,8 +287,6 @@ Gene set scores can be analyzed similarly to gene-level data, including differen
 
 </details>
 
----
-
 <details>
 <summary><strong> Nominating expression-based cancer targets </summary></strong>
 
@@ -307,8 +305,8 @@ ranked <- apex_rank_targets(
 
 ---
 
-<details>
-<summary><strong> Snakemake workflow for scalable execution </summary></strong>
+
+# Snakemake workflow for scalable execution
 
 APEX includes a reference Snakemake workflow for running analyses across multiple samples in parallel. The workflow supports local execution and is compatible with Slurm-based HPC systems for large-scale runs.
 
@@ -318,7 +316,6 @@ The Snakemake workflow, along with scripts and usage instructions, is provided i
 
 A dedicated README in that directory describes required inputs, configuration, and commands for execution.
 
-</details>
 
 ---
 

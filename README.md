@@ -19,13 +19,14 @@ APEX depends on several Bioconductor packages and system libraries that can be d
 For most users, we strongly recommend using the provided container, which includes all required dependencies and ensures reproducible results.
 
 
-### Recommended: Run APEX using a container
+<details>
+<summary><strong> Recommended: Run APEX using a container </strong></summary>
 
 The container includes:
-	•	R ≥ 4.4
-	•	Bioconductor ≥ 3.20
-	•	All APEX dependencies
-	•	Snakemake (for workflow execution)
+	•	R ≥ 4.4. 
+	•	Bioconductor ≥ 3.20. 
+	•	All APEX dependencies. 
+	•	Snakemake (for workflow execution). 
 	
 #### Local machines (Docker)
 
@@ -60,6 +61,8 @@ docker run --rm \
   ghcr.io/baca-lab/apex:4.0.0 \
   snakemake --cores 8
  ``` 
+
+</details>
 
 #### HPC systems (Apptainer / Singularity)
 

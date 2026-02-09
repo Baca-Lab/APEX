@@ -7,8 +7,12 @@
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">
   <img src="https://img.shields.io/badge/R->=4.4.0-blue?style=flat-square&logo=r">
   <!-- <img src="https://zenodo.org/badge/<ZENODO_ID>.svg"> -->
+<a href="https://github.com/Baca-Lab/APEX">
   <img src="https://img.shields.io/badge/docs-online-blue?style=flat-square&logo=readthedocs">
+</a>
 </p>
+
+
 
 ---
 **APEX (Associating Plasma Epigenomics with eXpression)** infers genome-wide tumor gene expression from plasma cfChIP-seq by integrating positional coverage and fragment-derived features from histone mark–enriched circulating chromatin (e.g., **H3K4me3**, **H3K36me3**) using pretrained models.  

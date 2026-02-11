@@ -277,7 +277,7 @@ apex_geneset_volcano_plot(
 
 ## Nominating expression-based cancer targets with APEX-inferred expression
 
-While differential expression captures group-level differences, many translational applications require prioritizing actionable targets on a per-sample basis. APEX supports expression-based cancer target nomination by ranking therapeutic genes according to their inferred expression levels relative to a large plasma reference cohort (n = 573 samples spanning multiple cancer types). Users may optionally restrict the reference to a specific cancer type (e.g., Urothelial, NSCLC, Prostate / NEPC), enabling lineage-matched target prioritization.
+While differential expression captures group-level differences, many translational applications require prioritizing actionable targets on a per-sample basis. APEX supports expression-based cancer target nomination by ranking therapeutic genes according to their inferred expression levels relative to a large plasma reference cohort (n = 417 samples spanning multiple cancer types). Users may optionally restrict the reference to a specific cancer type (e.g., Urothelial, NSCLC, Prostate / NEPC), enabling lineage-matched target prioritization.
 
 The `apex_rank_targets()` function computes gene-wise expression percentiles for user-supplied APEX-inferred expression data using either a pan-cancer or cancer-specific reference. Higher percentiles indicate genes that are unusually highly expressed relative to comparable tumors profiled by plasma cfChIP-seq, supporting context-aware target nomination directly from plasma.
 

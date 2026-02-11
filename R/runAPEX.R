@@ -81,6 +81,10 @@ options(
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K4_model.ubj", package = "apex"))
   } else if (fastMode == TRUE && is.null(frag_file_k4) && !is.null(frag_file_k36)) {
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K36_model.ubj", package = "apex"))
+  } else if (fastMode == TRUE && is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
+    xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K27_custom_model.ubj", package = "apex"))
+  } else if (fastMode == TRUE && !is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
+    xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K4_K27_custom_model.ubj", package = "apex"))
   } else {
     stop("Invalid combination of inputs: require frag_file_k4 and/or frag_file_k36, and fastMode settings consistent with provided files.")
   }

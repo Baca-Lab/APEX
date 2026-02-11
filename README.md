@@ -4,8 +4,12 @@
 <h1 align="center">APEX – Version 4.0.0 Released </h1>
 
 <p align="center">
+<a href="https://github.com/Baca-Lab/APEX">
   <img src="https://img.shields.io/badge/status-active-brightgreen?style=flat-square">
+</a>
+<a href="https://www.r-project.org/">
   <img src="https://img.shields.io/badge/R->=4.4.0-blue?style=flat-square&logo=r">
+</a>
   <!-- <img src="https://zenodo.org/badge/<ZENODO_ID>.svg"> -->
 <a href="https://github.com/Baca-Lab/APEX">
   <img src="https://img.shields.io/badge/docs-online-blue?style=flat-square&logo=readthedocs">
@@ -37,15 +41,6 @@ The container includes:
 ```
 docker pull ghcr.io/baca-lab/apex:4.0.0
 ```
-
-Interactive R session:
-```
-docker run --rm -it \
-  -v $(pwd):/work \
-  -w /work \
-  ghcr.io/baca-lab/apex:4.0.0 \
-  R
- ``` 
 
 Run APEX via an R script:
 
@@ -205,6 +200,8 @@ APEX provides multiple pretrained models corresponding to the chromatin immunopr
 
 - **H3K4me3 only**
 - **H3K36me3 only**
+- **H3K27ac only** 
+- **H3K4me3 + H3K27ac only**
 - **H3K4me3 + H3K36me3** *(recommended use case)*
 - **H3K4me3 + H3K36me3 + H3K27ac**
 
@@ -306,7 +303,7 @@ ranked <- apex_rank_targets(
 ```
 
 </details>
-
+Beyond this study, APEX has already been adopted across multiple projects in our institution and in collaborative efforts with pharmaceutical companies, including investigations of resistance to immunotherapy and targeted agents, enabled by a user-friendly R package and a fully containerized, Snakemake-compatible workflow that supports reproducible and scalable analysis. Notably, APEX was intentionally designed for patients with advanced cancer at diagnosis or progression to inform clinical decision making where repeated tissue biopsies are impractical. It is not intended nor has it been evaluated for early detection or minimal residual disease.
 ---
 
 

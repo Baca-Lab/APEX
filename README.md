@@ -1,7 +1,7 @@
 <p align="center">
   <img src="man/figures/APEX_logo_v2.png" alt="APEX Logo" width="750">
 </p>
-<h1 align="center">APEX – Version 4.1.0 Released </h1>
+<h1 align="center">APEX – Version 4.3.0 Released </h1>
 
 <p align="center">
 <a href="https://github.com/Baca-Lab/APEX">

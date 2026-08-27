@@ -181,29 +181,38 @@ qualityControl <- function(frags, histone_mark = "H3K4me3") {
   ))
 }
 
-qc <- function(quality_results) {
+qc <- function(quality_results, verbose = TRUE) {
   mark <- lapply(quality_results, function(x) x[[1]])
   enrichment_scores <- lapply(quality_results, function(x) x[[2]])
   frag_num <- lapply(quality_results, function(x) x[[3]])
-
+  
+  if (!isTRUE(verbose)) {
+    return(invisible(NULL))
+  }
+  
   cat("\n")
   cat("===========================================\n")
-  cat("             QC SUMMARY REPORT            \n")
+  cat("             QC SUMMARY REPORT             \n")
   cat("===========================================\n")
   cat(" Histone Mark   Enrichment   Fragments\n")
   cat("-------------------------------------------------\n")
-
-  qc <- logical(length(enrichment_scores))
-  status <- character(length(enrichment_scores))
-
+  
   for (i in seq_along(enrichment_scores)) {
-    enrich <- enrichment_scores[[i]]
-    fragments <- frag_num[[i]]
-    cat(sprintf(" %-12s   %-11.2f  %-12s\n", mark[[i]], enrich, format(fragments, big.mark = ",")))
-}
-
+    if (is.null(mark[[i]])) {
+      next
+    }
+    
+    cat(sprintf(
+      " %-12s   %-11.2f  %-12s\n",
+      mark[[i]],
+      enrichment_scores[[i]],
+      format(frag_num[[i]], big.mark = ",")
+    ))
+  }
+  
   cat("=================================================\n\n")
-  return(qc)
+  
+  invisible(NULL)
 }
 
 .msg <- function(..., verbose = TRUE) {

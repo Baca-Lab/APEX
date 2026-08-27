@@ -8,6 +8,7 @@ extractFeatures(
   frag_file_k4 = NULL,
   frag_file_k36 = NULL,
   frag_file_k27 = NULL,
+  custom_coordinates = NULL,
   upstream = 3000,
   downstream = 3000,
   num_of_promoter_tiles = 20L,
@@ -20,35 +21,52 @@ extractFeatures(
 )
 }
 \arguments{
-\item{frag_file_k4}{Path to the H3K4me3 fragment file (required).}
+\item{frag_file_k4}{Path to the H3K4me3 fragment file (optional). Used for
+promoter features and, when \code{useAltPromoter = TRUE}, to select
+the transcription start site (TSS) with the highest H3K4me3 coverage.}
 
 \item{frag_file_k36}{Path to the H3K36me3 fragment file (optional).}
 
-\item{frag_file_k27}{Path to the H3K27ac fragment file (optional). Only used when \code{fastMode = FALSE}.}
+\item{frag_file_k27}{Path to the H3K27ac fragment file (optional). Used for
+enhancer features when \code{fastMode = FALSE}, and as the fallback
+mark for alternate TSS selection when \code{useAltPromoter = TRUE}
+and H3K4me3 is not provided.}
 
-\item{upstream}{Number of base pairs upstream to include in promoter regions. Default: 3000.}
+\item{custom_coordinates}{Optional path to a BED6 file containing one}
 
-\item{downstream}{Number of base pairs downstream to include in promoter regions. Default: 3000.}
+\item{upstream}{Number of base pairs upstream of the TSS to include in
+promoter regions. Default: 3000.}
 
-\item{num_of_promoter_tiles}{Number of promoter tiles to generate. Default: 20.}
+\item{downstream}{Number of base pairs downstream of the TSS to include in
+promoter regions. Default: 3000.}
 
-\item{num_of_genebody_tiles}{Number of gene body tiles to generate. Default: 20.}
+\item{num_of_promoter_tiles}{Number of promoter tiles. Default: 20.}
 
-\item{num_of_intergenic_tiles}{Number of tiles for intergenic enhancer regions. Only used when \code{fastMode = FALSE}. Default: 1.}
+\item{num_of_genebody_tiles}{Number of gene-body tiles. Default: 20.}
 
-\item{num_of_intragenic_tiles}{Number of tiles for intragenic enhancer regions. Only used when \code{fastMode = FALSE}. Default: 1.}
+\item{num_of_intergenic_tiles}{Number of intergenic enhancer tiles. Only
+used when \code{fastMode = FALSE}. Default: 1.}
 
-\item{fastMode}{Logical; if \code{TRUE} (default), runs the faster model using promoter/gene-body features.
-If \code{FALSE}, includes H3K27ac and intergenic/intragenic enhancer features.}
+\item{num_of_intragenic_tiles}{Number of intragenic enhancer tiles. Only
+used when \code{fastMode = FALSE}. Default: 1.}
 
-\item{useAltPromoter}{Logical; whether to use alternate promoters based on highest H3K4me3 coverage. Default: TRUE.}
+\item{fastMode}{Logical; if \code{TRUE} (default), uses promoter and
+gene-body features. If \code{FALSE}, additionally includes H3K27ac
+and intergenic/intragenic enhancer features.}
 
-\item{verbose}{Logical. If TRUE (default), progress messages are printed during execution. If FALSE, all messages are suppressed.}
+\item{useAltPromoter}{Logical; if \code{TRUE} (default), selects the TSS
+with the highest H3K4me3 coverage for each gene, or H3K27ac coverage
+if H3K4me3 is unavailable. If \code{FALSE}, user-defined coordinates
+from \code{custom_coordinates} are used when provided; otherwise,
+default annotated gene coordinates and TSSs are used.}
+
+\item{verbose}{Logical; if \code{TRUE} (default), progress messages are
+printed. If \code{FALSE}, messages are suppressed.}
 }
 \value{
 A dataframe containing the extracted features.
 }
 \description{
-This function extracts features from fragment files and generates a dataframe
-with several epigenetic features for each gene.
+This function extracts epigenomic features from fragment
+files and returns a dataframe of features for each gene.
 }

@@ -10,17 +10,21 @@ apex(
   frag_file_k27 = NULL,
   upstream = 3000,
   downstream = 3000,
+  custom_coordinates = NULL,
   num_of_promoter_tiles = 20L,
   num_of_genebody_tiles = 20L,
   num_of_intergenic_tiles = 1L,
   num_of_intragenic_tiles = 1L,
   fastMode = TRUE,
   useAltPromoter = TRUE,
+  minNorm = TRUE,
   verbose = TRUE
 )
 }
 \arguments{
-\item{frag_file_k4}{Path to the H3K4me3 fragment file (**required**).}
+\item{frag_file_k4}{Optional path to an H3K4me3 fragment file.
+H3K4me3 is recommended and, when available, is used for alternate-promoter
+selection. At least one supported histone-mark fragment file must be supplied.}
 
 \item{frag_file_k36}{Path to the H3K36me3 fragment file (optional).}
 
@@ -29,6 +33,12 @@ apex(
 \item{upstream}{Integer. Number of base pairs upstream to include in promoter regions. Default: 3000.}
 
 \item{downstream}{Integer. Number of base pairs downstream to include in promoter regions. Default: 3000.}
+
+\item{custom_coordinates}{Optional path to a BED file containing
+user-defined genomic coordinates for each gene. The file must contain
+a column named \code{gene_name} and strand information. These
+coordinates are used to define gene-body regions, and transcription
+start sites are derived from the coordinates according to strand.}
 
 \item{num_of_promoter_tiles}{Integer. Number of promoter tiles to generate. Default: 20.}
 

@@ -2,19 +2,22 @@ import pandas as pd
 
 configfile: "config.yaml"
 
+# Clean outdir defensively (avoids whitespace bugs)
+OUTDIR = config["outdir"].strip()
+
 manifest = pd.read_csv(config["manifest"], sep="\t")
 SAMPLES = manifest["sample_id"].tolist()
 
 rule all:
     input:
-        f"{config['outdir']}/APEX_expression_matrix.tsv",
-        f"{config['outdir']}/APEX_QC_metrics.tsv"
+        OUTDIR + "/APEX_expression_matrix.tsv",
+        OUTDIR + "/APEX_QC_metrics.tsv"
 
 rule apex_qc:
     input:
         config["manifest"]
     output:
-        f"{config['outdir']}/APEX_QC_metrics.tsv"
+        OUTDIR + "/APEX_QC_metrics.tsv"
     shell:
         """
         Rscript scripts/apex_qc_runner.R \
@@ -26,7 +29,7 @@ rule apex_per_sample:
     input:
         manifest=config["manifest"]
     output:
-        f"{config['outdir']}/per_sample/{{sample}}.apex.tsv"
+        OUTDIR + "/per_sample/{sample}.apex.tsv"
     params:
         sample=lambda wc: wc.sample
     shell:
@@ -47,12 +50,12 @@ rule apex_per_sample:
 
 rule gather:
     input:
-        expand(f"{config['outdir']}/per_sample/{{sample}}.apex.tsv", sample=SAMPLES)
+        expand(OUTDIR + "/per_sample/{sample}.apex.tsv", sample=SAMPLES)
     output:
-        f"{config['outdir']}/APEX_expression_matrix.tsv"
+        OUTDIR + "/APEX_expression_matrix.tsv"
     shell:
         """
         Rscript scripts/gather_apex_matrix.R \
-          {config[outdir]}/per_sample \
+          {OUTDIR}/per_sample \
           {output}
         """

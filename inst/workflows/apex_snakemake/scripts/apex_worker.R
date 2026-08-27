@@ -23,7 +23,7 @@ manifest <- data.frame(
   stringsAsFactors = FALSE
 )
 
-res <- apex_batch(manifest = manifest)
+res <- apex_batch(manifest = manifest, fastMode = FALSE)
 
 write.table(
   res,

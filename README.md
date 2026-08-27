@@ -1,7 +1,7 @@
 <p align="center">
   <img src="man/figures/APEX_logo_v2.png" alt="APEX Logo" width="750">
 </p>
-<h1 align="center">APEX – Version 4.0.0 Released </h1>
+<h1 align="center">APEX – Version 4.1.0 Released </h1>
 
 <p align="center">
 <a href="https://github.com/Baca-Lab/APEX">
@@ -23,97 +23,33 @@
 
 ## Installation
 
-APEX depends on several Bioconductor packages and system libraries that can be difficult to resolve across environments.
-For most users, we strongly recommend using the provided container, which includes all required dependencies and ensures reproducible results.
+### Step 1: Install dependencies separately
 
-
-<details>
-<summary><strong> Recommended: Run APEX using a container </strong></summary>
-
-The container includes:
-	•	R ≥ 4.4  
-	•	Bioconductor ≥ 3.20  
-	•	All APEX dependencies   
-	•	Snakemake (for workflow execution)  
-	
-#### Local machines (Docker)
-
-```
-docker pull ghcr.io/baca-lab/apex:4.0.0
-```
-
-Run APEX via an R script:
-
-```
-docker run --rm -it \
-  -v $(pwd):/work \
-  -w /work \
-  ghcr.io/baca-lab/apex:4.0.0 \
-  R
-```
-
-Run the included Snakemake workflow. Detailed setup and usage instructions are provided in `inst/workflows/apex_snakemake/README.md`.
-```
-docker run --rm \
-  -v $(pwd):/work \
-  -w /work \
-  ghcr.io/baca-lab/apex:4.0.0 \
-  snakemake --cores 8
- ``` 
-
-#### HPC systems (Apptainer / Singularity)
-
-```
-apptainer pull apex.sif docker://ghcr.io/baca-lab/apex:4.0.0
-```
-
-```
-apptainer exec apex.sif Rscript run_apex.R
-```
-
-This approach avoids manual installation of R, Bioconductor, or system dependencies and is recommended for all large-scale or shared analyses.
-
-</details>
-
-<details>
-<summary><strong>  Alternative: Install APEX directly in R </strong></summary>
-
-If you prefer to install APEX into an existing R environment, you must first install the required Bioconductor dependencies.
-
-
-### Step 1: Install Bioconductor dependencies
-
-```r
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager")
-}
-
-bioc_packages <- c(
-  "BiocGenerics", "XVector", "Biostrings", "BiocIO",
-  "BSgenome.Hsapiens.UCSC.hg19", "GSVA", "limma",
-  "rtracklayer", "S4Vectors", "GenomeInfoDb",
-  "IRanges", "GenomicRanges", "BiocStyle"
-)
-
-BiocManager::install(bioc_packages, ask = FALSE, update = TRUE)
-```
+APEX does not install third-party R packages. Before installing APEX, users must
+review and install its dependencies separately by following
+[INSTALL_DEPENDENCIES.md](INSTALL_DEPENDENCIES.md).
 
 ### Step 2: Install APEX from GitHub
-We recommend installing APEX directly from GitHub using the 'remotes' package:
+
+After all dependencies, including `remotes`, have been installed, install APEX
+without dependency resolution:
 
 ```r
 if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
+  stop("Install the 'remotes' package before installing APEX.")
 }
 
 remotes::install_github(
   "Baca-Lab/APEX",
-  build_vignettes = TRUE,
-  dependencies = TRUE
+  build_vignettes = FALSE,
+  dependencies = FALSE,
+  upgrade = "never"
 )
 ```
 
-</details>
+If a required dependency is missing or does not meet the minimum version in
+`DESCRIPTION`, APEX installation will stop and report the missing dependency;
+APEX will not install it automatically.
 
 ## Load apex
 After installation, load the `apex` package using the `library` function in R:  
@@ -303,7 +239,7 @@ ranked <- apex_rank_targets(
 ```
 
 </details>
-Beyond this study, APEX has already been adopted across multiple projects in our institution and in collaborative efforts with pharmaceutical companies, including investigations of resistance to immunotherapy and targeted agents, enabled by a user-friendly R package and a fully containerized, Snakemake-compatible workflow that supports reproducible and scalable analysis. Notably, APEX was intentionally designed for patients with advanced cancer at diagnosis or progression to inform clinical decision making where repeated tissue biopsies are impractical. It is not intended nor has it been evaluated for early detection or minimal residual disease.
+Beyond this study, APEX has already been adopted across multiple projects in our institution and in collaborative efforts with pharmaceutical companies, including investigations of resistance to immunotherapy and targeted agents, enabled by a user-friendly R package and a Snakemake-compatible workflow that supports reproducible and scalable analysis. Notably, APEX was intentionally designed for patients with advanced cancer at diagnosis or progression to inform clinical decision making where repeated tissue biopsies are impractical. It is not intended nor has it been evaluated for early detection or minimal residual disease.
 ---
 
 
@@ -338,4 +274,3 @@ Other references:
 If you use APEX in your work, please cite the accompanying manuscript (details pending).  
 
 ---
-

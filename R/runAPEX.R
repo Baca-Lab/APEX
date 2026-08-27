@@ -15,11 +15,18 @@
 #' @importFrom xgboost xgb.DMatrix xgb.load
 #' @importFrom utils globalVariables
 #'
-#' @param frag_file_k4 Path to the H3K4me3 fragment file (**required**).
+#' @param frag_file_k4 Optional path to an H3K4me3 fragment file.
+#'   H3K4me3 is recommended and, when available, is used for alternate-promoter
+#'   selection. At least one supported histone-mark fragment file must be supplied.
 #' @param frag_file_k36 Path to the H3K36me3 fragment file (optional).
 #' @param frag_file_k27 Path to the H3K27ac fragment file (optional).
 #' @param upstream Integer. Number of base pairs upstream to include in promoter regions. Default: 3000.
 #' @param downstream Integer. Number of base pairs downstream to include in promoter regions. Default: 3000.
+#' @param custom_coordinates Optional path to a BED file containing
+#'        user-defined genomic coordinates for each gene. The file must contain
+#'        a column named \code{gene_name} and strand information. These
+#'        coordinates are used to define gene-body regions, and transcription
+#'        start sites are derived from the coordinates according to strand.
 #' @param num_of_promoter_tiles Integer. Number of promoter tiles to generate. Default: 20.
 #' @param num_of_genebody_tiles Integer. Number of gene body tiles to generate. Default: 20.
 #' @param num_of_intergenic_tiles Integer. Number of intergenic enhancer tiles to generate. Default: 1.
@@ -36,12 +43,14 @@ apex <- function(frag_file_k4,
                  frag_file_k27 = NULL,
                  upstream = 3000,
                  downstream = 3000,
+                 custom_coordinates = NULL,
                  num_of_promoter_tiles = 20L,
                  num_of_genebody_tiles = 20L,
                  num_of_intergenic_tiles = 1L,
                  num_of_intragenic_tiles = 1L,
                  fastMode = TRUE,
                  useAltPromoter = TRUE,
+                 minNorm = TRUE,
                  verbose = TRUE) {
 
 #Suppress data table outut
@@ -63,6 +72,7 @@ options(
     num_of_intergenic_tiles = num_of_intergenic_tiles,
     num_of_intragenic_tiles = num_of_intragenic_tiles,
     fastMode = fastMode,
+    custom_coordinates = custom_coordinates,
     useAltPromoter = useAltPromoter,
     verbose = verbose  # <-- key: pass through
   )
@@ -81,9 +91,9 @@ options(
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K4_model.ubj", package = "apex"))
   } else if (fastMode == TRUE && is.null(frag_file_k4) && !is.null(frag_file_k36)) {
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K36_model.ubj", package = "apex"))
-  } else if (fastMode == TRUE && is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
+  } else if (fastMode == FALSE && is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K27_custom_model.ubj", package = "apex"))
-  } else if (fastMode == TRUE && !is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
+  } else if (fastMode == FALSE && !is.null(frag_file_k4) && is.null(frag_file_k36) && !is.null(frag_file_k27)){
     xgboost_model <- xgboost::xgb.load(system.file("resources/APEX_K4_K27_custom_model.ubj", package = "apex"))
   } else {
     stop("Invalid combination of inputs: require frag_file_k4 and/or frag_file_k36, and fastMode settings consistent with provided files.")
@@ -93,7 +103,9 @@ options(
 
   dtable <- xgboost::xgb.DMatrix(data = as.matrix(features))
   apex_prediction <- stats::predict(xgboost_model, dtable)
+  if(minNorm == TRUE){
   apex_prediction <- apex_prediction - min(apex_prediction)
+  }
   names(apex_prediction) <- rownames(features)
 
   .msg("Done.", verbose = verbose)

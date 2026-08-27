@@ -72,17 +72,24 @@ apex_mat    <- ext$apex_mat
 
 # Install and load packages
 
-APEX is an R package available from GitHub. The code below installs the required dependency, installs APEX if needed, and loads the package.
+APEX is an R package available from GitHub. APEX does not install third-party R
+packages. Before installing APEX, review and install its dependencies separately
+using the repository's `INSTALL_DEPENDENCIES.md` instructions.
 
 ```{r}
-# Install remotes for GitHub installation
+# The user must install remotes and all APEX dependencies first.
 if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
+  stop("Install the 'remotes' package before installing APEX.")
 }
 
-# Install APEX from GitHub (if not already installed)
+# Install APEX without downloading or updating dependencies.
 if (!requireNamespace("apex", quietly = TRUE)) {
-  remotes::install_github("Baca-Lab/APEX", build_vignettes = TRUE, dependencies = TRUE)
+  remotes::install_github(
+    "Baca-Lab/APEX",
+    build_vignettes = FALSE,
+    dependencies = FALSE,
+    upgrade = "never"
+  )
 }
 
 # Load the package

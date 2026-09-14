@@ -271,6 +271,6 @@ Other references:
 
 # Citation
 
-If you use APEX in your work, please cite the accompanying manuscript (details pending).  
+If you use APEX in your work, please cite the accompanying manuscript (DOI: https://doi.org/10.64898/2026.02.18.706026).  
 
 ---
